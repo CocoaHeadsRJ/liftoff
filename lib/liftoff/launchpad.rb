@@ -14,9 +14,11 @@ module Liftoff
         file_manager.create_project_dir(@config.path) do
           generate_project
           setup_cocoapods
+          setup_carthage
           generate_templates
           generate_settings
           install_cocoapods
+          install_carthage
           perform_project_actions
           open_project
         end
@@ -55,6 +57,14 @@ module Liftoff
       cocoapods_setup.install_cocoapods
     end
 
+    def setup_carthage
+      carthage_setup.setup_carthage
+    end
+
+    def install_carthage
+      carthage_setup.install_carthage
+    end
+
     def generate_templates
       TemplateGenerator.new(@config).generate_templates(file_manager)
     end
@@ -80,7 +90,8 @@ module Liftoff
     end
 
     def add_script_phases
-      xcode_helper.add_script_phases(@config.run_script_phases)
+      run_script_phases = @config.run_script_phases + dependency_run_scripts
+      xcode_helper.add_script_phases(run_script_phases)
     end
 
     def enable_warnings
@@ -119,6 +130,23 @@ module Liftoff
 
     def cocoapods_setup
       @cocoapods_setup ||= CocoapodsSetup.new(@config)
+    end
+
+    def carthage_setup
+      @carthage_setup ||= CarthageSetup.new(@config)
+    end
+
+    def dependency_run_scripts
+      run_scripts = []
+
+      if @config.use_carthage
+        run_scripts << {
+          "file" => "copy_frameworks.sh",
+          "name" => "Copy framworks (Carthage)",
+        }
+      end
+
+      run_scripts
     end
   end
 end

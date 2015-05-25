@@ -9,6 +9,7 @@ require 'highline/import'
 require 'xcodeproj'
 
 require 'liftoff/cli'
+require 'liftoff/carthage_setup'
 require 'liftoff/cocoapods_setup'
 require 'liftoff/settings_generator'
 require 'liftoff/configuration_parser'

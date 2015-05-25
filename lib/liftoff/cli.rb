@@ -39,6 +39,10 @@ module Liftoff
           @options[:use_cocoapods] = use_cocoapods
         end
 
+        opts.on('--[no-]carthage', 'Enable/Disable Carthage') do |use_carthage|
+          @options[:use_carthage] = use_carthage
+        end
+
         opts.on('--[no-]git', 'Enable/Disable git') do |configure_git|
           @options[:configure_git] = configure_git
         end
